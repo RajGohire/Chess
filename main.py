@@ -15,14 +15,25 @@ class Game:
 
 def main():
     game = Game(False, {'Red': 'Green', 'Green': 'Red'}, 'Green', newBoard())
+    print("[Enter q to exit game]")
+    mode = ''#input("Do you want to play 2-players mode? (y/n) ")
     printBoard(game)
     while (not game.gameOver):
-        game.move = input("Enter your next move (original-final):")
+        game.move = input("Enter your next move (original-final): ")
+        
+        if (game.move == 'q'):
+            game.gameOver = True
+            continue
+        
         if (isValidMove(game)):
             updateBoard(game)
-            game.turn = game.players[game.turn]
-            game.board = rotateBoard(game.board)
+            if (mode == 'y' and not game.gameOver):
+                game.turn = game.players[game.turn]
+                game.board = rotateBoard(game.board)
             printBoard(game)
+    
+    print("################# Game Over! #################\n")
+    exit()
 
 if __name__ == '__main__':
     main()

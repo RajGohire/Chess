@@ -17,26 +17,29 @@ def newBoard():
 def printBoard(game):
     print("\n---------------------------------------------")
     print("{} player's turn!".format(game.turn))
-    print("---------------------------------------------")
+    print("---------------------------------------------\n" + "    +----+----+----+----+----+----+----+----+")
     for x in range (1,9):
-        print(x, end = "\t")
+        print(x, end = "   | ")
         for y in range (1,9):
             if (game.board[x][y] == ''):
-                print('_', end = "{:4s}".format(""))
+                print('   | ', end = "")
                 continue
             if (game.board[x][y].isupper()):
-                print(f'{Fore.GREEN}{game.board[x][y]}{Style.RESET_ALL}', end = "{:3s}".format(""))
+                print(f'{Fore.GREEN}{game.board[x][y]}{Style.RESET_ALL}' + ' | ', end = "")
             else:
-                print(f'{Fore.RED}{game.board[x][y]}{Style.RESET_ALL}', end = "{:3s}".format(""))
-        print("\n")
+                print(f'{Fore.RED}{game.board[x][y]}{Style.RESET_ALL}' + ' | ', end = "")
+        print("     +----+----+----+----+----+----+----+----+")
     
+    print()
     for j in range (8):
         if (j == 0):
-           print("", end="\t")
+           print("{0:6s}".format(""), end="")
         print(chr(97 + j), end="{:4s}".format(""))  # Use ord() for char to int
     print("\n")
 
 def updateBoard(game):
+    if (game.board[game.fy][game.fx].lower().strip() == 'k'):
+        game.gameOver = True
     game.board[game.fy][game.fx] = game.board[game.oy][game.ox]
     game.board[game.oy][game.ox] = ''
 
