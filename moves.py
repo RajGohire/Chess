@@ -16,19 +16,33 @@ def isValidMoveP(game):
         return (not isOppPiece(game, game.fx, game.fy))
     # Attack diagonal piece
     elif (game.fy < game.oy and isDiagonal(game.ox, game.oy, game.fx, game.fy)):
-        print("{} took {}'s piece!".format(game.turn, game.players[game.turn]))
         return True
     return False
     
 # Bishop - Valid Move
 def isValidMoveB(game):
-    if (isDiagonal()):
+    if (isDiagonal(game.ox, game.oy, game.fx, game.fy)):
+        i = game.ox
+        j = game.oy
+        if (game.fx < game.ox): i -= 1
+        elif (game.fx > game.ox): i += 1
+        if (game.fy < game.oy): j -= 1
+        elif (game.fy > game.oy): j += 1
+        
+        while (i != game.fx and j != game.fy):
+            if (game.board[j][i] != ''):
+                return False
+            if (game.fx < game.ox): i -= 1
+            elif (game.fx > game.ox): i += 1
+            if (game.fy < game.oy): j -= 1
+            elif (game.fy > game.oy): j += 1
         return True
     return False
 
 # Knight - Valid Move
 def isValidMoveKN(game):
-    return False
+    return ((abs(game.fx - game.ox) == 1 and abs(game.fy - game.oy) == 2) \
+        or (abs(game.fx - game.ox) == 2 and abs(game.fy - game.oy) == 1))
 
 # Rook - Valid Move
 def isValidMoveR(game):
@@ -42,7 +56,6 @@ def isValidMoveR(game):
     # Move Vertically
     elif (game.ox - game.fx == 0):
         for i in range (game.oy-1, game.fy, -1):
-            print(i, (game.board[i][game.ox]))
             if (game.board[i][game.ox] != ''):
                 return False
         return True
@@ -64,21 +77,24 @@ def isValidMoveK(game):
 
 # Queen - Valid Move
 def isValidMoveQ(game):
-    return False
+    return (isValidMoveR(game) or isValidMoveB(game))
 
 def isValidMove(game):
     move = game.move
     if (len(move) == 5):
         # Call respective piece move func if move has current format and valid positions
-        if (move[0].isalpha() and move[3].isalpha() and move[1].isdigit() and move[4].isdigit()):
+        if (move[0].isalpha() and move[3].isalpha() \
+            and move[1].isdigit() and move[4].isdigit()):
             # Convert move into int values
             ox = game.ox = ord(move[0].lower()) - 96      # Current x coordinate (a-h)
             oy = game.oy = int(move[1])                   # Current y coordinate (1-8)
             fx = game.fx = ord(move[3].lower()) - 96      # Final x coordinate (a-h)
             fy = game.fy = int(move[4])                   # Final y coordinate (1-8)
             
-            # If going outside board / Current position is not blank / Using opponent piece / Moving to same position
-            if ("0" in move or game.board[oy][ox] == '' or isOppPiece(game, ox, oy) or (move[0] == move[3] and move[1] == move[4])):
+            # If going outside board / Current position is not blank /
+            # Using opponent piece / Moving to same position
+            if ("0" in move or game.board[oy][ox] == '' or isOppPiece(game, ox, oy) \
+                or (move[0] == move[3] and move[1] == move[4])):
                 pass
             
             elif (ox <= ord('h')-96 and fx <= ord('h')-96 and oy <= 8 and fy <= 8):

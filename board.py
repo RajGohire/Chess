@@ -1,5 +1,4 @@
 from colorama import Fore, Style
-from moves import isValidMove
 
 def newBoard():
     board = [['', '', '', '', '', '', '', '', '', ''],
@@ -17,7 +16,8 @@ def newBoard():
 def printBoard(game):
     print("\n---------------------------------------------")
     print("{} player's turn!".format(game.turn))
-    print("---------------------------------------------\n" + "    +----+----+----+----+----+----+----+----+")
+    print("---------------------------------------------\n" \
+        + "    +----+----+----+----+----+----+----+----+")
     for x in range (1,9):
         print(x, end = "   | ")
         for y in range (1,9):
@@ -28,9 +28,9 @@ def printBoard(game):
                 print(f'{Fore.GREEN}{game.board[x][y]}{Style.RESET_ALL}' + ' | ', end = "")
             else:
                 print(f'{Fore.RED}{game.board[x][y]}{Style.RESET_ALL}' + ' | ', end = "")
-        print("     +----+----+----+----+----+----+----+----+")
-    
+        print("\n    +----+----+----+----+----+----+----+----+")
     print()
+
     for j in range (8):
         if (j == 0):
            print("{0:6s}".format(""), end="")

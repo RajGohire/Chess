@@ -26,6 +26,8 @@ def main():
             continue
         
         if (isValidMove(game)):
+            if (isOppPiece(game, game.fx, game.fy)):
+                print("{} took {}'s piece!".format(game.turn, game.players[game.turn]))
             updateBoard(game)
             if (mode == 'y' and not game.gameOver):
                 game.turn = game.players[game.turn]
