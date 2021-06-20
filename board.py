@@ -2,44 +2,47 @@ from colorama import Fore, Style
 from moves import isValidMove
 
 def newBoard():
-    board = [['','', '', '', '', '', '', '', ''],
-            ['','r ', 'kn', 'b ', 'k ', 'q ', 'b ', 'kn', 'r '],
-            ['','p ', 'p ', 'p ', 'p ', 'p ', 'p ', 'p ', 'p '],
-            ['','', '', '', '', '', '', '', ''],
-            ['','', '', '', '', '', '', '', ''],
-            ['','', '', '', '', '', '', '', ''],
-            ['','', '', '', '', '', '', '', ''],
-            ['','P ', 'P ', 'P ', 'P ', 'P ', 'P ', 'P ', 'P '],
-            ['','R ', 'KN', 'B ', 'K ', 'Q ', 'B ', 'KN', 'R '],]
+    board = [['', '', '', '', '', '', '', '', '', ''],
+            ['', 'r ', 'kn', 'b ', 'q ', 'k ', 'b ', 'kn', 'r ', ''],
+            ['', 'p ', 'p ', 'p ', 'p ', 'p ', 'p ', 'p ', 'p ', ''],
+            ['', '', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', '', ''],
+            ['', 'P ', 'P ', 'P ', 'P ', 'P ', 'P ', 'P ', 'P ', ''],
+            ['', 'R ', 'KN', 'B ', 'Q ', 'K ', 'B ', 'KN', 'R ', ''],
+            ['', '', '', '', '', '', '', '', '', '']]
     return board
 
-def printBoard(board):
+def printBoard(game):
     print("\n---------------------------------------------")
+    print("{} player's turn!".format(game.turn))
+    print("---------------------------------------------")
     for x in range (1,9):
         print(x, end = "\t")
         for y in range (1,9):
-            if (board[x][y] == ''):
+            if (game.board[x][y] == ''):
                 print('_', end = "{:4s}".format(""))
                 continue
-            if (board[x][y].isupper()):
-                print(f'{Fore.GREEN}{board[x][y]}{Style.RESET_ALL}', end = "{:3s}".format(""))
+            if (game.board[x][y].isupper()):
+                print(f'{Fore.GREEN}{game.board[x][y]}{Style.RESET_ALL}', end = "{:3s}".format(""))
             else:
-                print(f'{Fore.RED}{board[x][y]}{Style.RESET_ALL}', end = "{:3s}".format(""))
+                print(f'{Fore.RED}{game.board[x][y]}{Style.RESET_ALL}', end = "{:3s}".format(""))
         print("\n")
     
     for j in range (8):
         if (j == 0):
            print("", end="\t")
         print(chr(97 + j), end="{:4s}".format(""))  # Use ord() for char to int
-    
     print("\n")
 
-def updateBoard(board, move):
-    ox = ord(move[0].lower()) - 96
-    oy = int(move[1])
-    fx = ord(move[3].lower()) - 96
-    fy = int(move[4])
-    if (isValidMove(board, move, ox, oy, fx, fy)):
-        board[fy][fx] = board[oy][ox]
-        board[oy][ox] = ''
-    return board
+def updateBoard(game):
+    game.board[game.fy][game.fx] = game.board[game.oy][game.ox]
+    game.board[game.oy][game.ox] = ''
+
+def rotateBoard(board):
+    tempBoard = newBoard()
+    for x in range (10):
+        for y in range (10):
+            tempBoard[x][y] = board[9-x][9-y]
+    return tempBoard
