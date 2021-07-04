@@ -9,14 +9,27 @@ def isDiagonal(ox, oy, fx, fy):
 # Pawn - Valid Move
 def isValidMoveP(game):
     # Move from start position
-    if (game.oy == 7 and 0 < game.oy-game.fy < 3):
+    if (game.oy == 2 and 0 < game.fy-game.oy < 3):
         return True
     # Move forward 1 space
-    elif (game.ox == game.fx and game.oy-game.fy == 1):
+    elif (game.ox == game.fx and game.fy-game.oy == 1):
         return (not isOppPiece(game, game.fx, game.fy))
     # Attack diagonal piece
-    elif (game.fy < game.oy and isDiagonal(game.ox, game.oy, game.fx, game.fy)):
+    elif (isOppPiece(game, game.fx, game.fy) and game.fy > game.oy \
+        and game.fy - game.oy == 1 and isDiagonal(game.ox, game.oy, game.fx, game.fy)):
         return True
+    # En passant
+    if (game.prevMove != ""):
+        pox = 9 - (ord(game.prevMove[0].lower()) - 96)  # Current x coordinate (a-h)
+        poy = 9 - int(game.prevMove[1])                 # Current y coordinate (1-8)
+        pfx = 9 - (ord(game.prevMove[3].lower()) - 96)  # Final x coordinate (a-h)  
+        pfy = 9 - int(game.prevMove[4])                 # Final y coordinate (1-8)  
+        if (game.fy > game.oy and game.fy - game.oy == 1 \
+            and isOppPiece(game, pfx, pfy) and game.board[pfy][pfx].lower() == 'p ' \
+            and poy - pfy == 2 and game.oy == pfy and game.fx == pfx \
+            and isDiagonal(game.ox, game.oy, game.fx, game.fy)):
+            game.board[pfy][pfx] = '  '
+            return True
     return False
     
 # Bishop - Valid Move
@@ -55,9 +68,14 @@ def isValidMoveR(game):
     
     # Move Vertically
     elif (game.ox - game.fx == 0):
-        for i in range (game.oy-1, game.fy, -1):
-            if (game.board[i][game.ox] != ''):
-                return False
+        if game.oy > game.fy:
+            for i in range (game.oy-1, game.fy, -1):
+                if (game.board[i][game.ox] != ''):
+                    return False
+        elif (game.oy < game.fy):
+            for i in range (game.oy+1, game.fy):
+                if (game.board[i][game.ox] != ''):
+                    return False
         return True
     return False
 
@@ -93,11 +111,12 @@ def isValidMove(game):
             
             # If going outside board / Current position is not blank /
             # Using opponent piece / Moving to same position
-            if ("0" in move or game.board[oy][ox] == '' or isOppPiece(game, ox, oy) \
-                or (move[0] == move[3] and move[1] == move[4])):
+            if not all (0 < i < 9 for i in [ox, oy, fx, fy]):
                 pass
-            
-            elif (ox <= ord('h')-96 and fx <= ord('h')-96 and oy <= 8 and fy <= 8):
+            elif (game.board[oy][ox] == '' or isOppPiece(game, ox, oy) \
+                or (move[0] == move[3] and move[1] == move[4])):
+                pass            
+            else:
                 # Move if space is empty or opponent
                 if(game.board[fy][fx] == '' or isOppPiece(game, fx, fy)):
                     if (eval("isValidMove" + game.board[oy][ox].upper())(game)):
